@@ -1,7 +1,7 @@
 {
   "name": "blockstorm-cli",
   "version": "1.0.0",
-  "description": "Generate CSVs of transaction and wallet data from Blockchain.info",
+  "description": "CLI tool that generates CSVs of transaction and wallet data from Blockchain.info",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -17,8 +17,17 @@
   ],
   "author": "Kyle Taylor",
   "license": "MIT",
+  "bin": {
+    "blockstorm-cli": "bin/blockstorm-cli"
+  },
   "bugs": {
     "url": "https://github.com/kyletaylored/blockstorm/issues"
   },
-  "homepage": "https://github.com/kyletaylored/blockstorm#readme"
+  "homepage": "https://github.com/kyletaylored/blockstorm#readme",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "json2csv": "^4.3.3",
+    "minimist": "^1.2.0",
+    "ora": "^3.0.0"
+  }
 }
