@@ -2,9 +2,9 @@ const menus = {
   main: `
     blockstorm-cli [command] <options>
 
-    block [block id] .......... show block info
-    tx [tx id]       .......... show transaction info
-    addr [addr id]   .......... show wallet info and transaction history
+    block <options>  .......... show block info
+    tx <options>     .......... show transaction info
+    addr <options>   .......... show wallet info and transaction history
     balance          .......... show wallet balance
     latest           .......... show latest block info
     help             .......... show help menu for a command`,
