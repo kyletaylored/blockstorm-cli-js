@@ -15,11 +15,15 @@
     "wallet",
     "cli"
   ],
+  "engines": {
+    "node": ">=8"
+  },
   "author": "Kyle Taylor",
   "license": "MIT",
   "bin": {
     "blockstorm-cli": "bin/blockstorm-cli"
   },
+  "preferGlobal": true,
   "bugs": {
     "url": "https://github.com/kyletaylored/blockstorm/issues"
   },

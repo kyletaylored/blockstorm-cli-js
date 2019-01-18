@@ -2,6 +2,14 @@
 
 This is a simple CLI tool that fetches and downloads information from blockchain.info.
 
+## Installation
+
+```bash
+npm i -g blockstorm-cli
+```
+
+## Usage
+
 ```bash
 $ blockstorm-cli help
 
