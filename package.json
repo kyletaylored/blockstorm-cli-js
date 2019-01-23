@@ -30,8 +30,10 @@
   "homepage": "https://github.com/kyletaylored/blockstorm#readme",
   "dependencies": {
     "axios": "^0.18.0",
+    "deepmerge": "^3.1.0",
     "json2csv": "^4.3.3",
     "minimist": "^1.2.0",
-    "ora": "^3.0.0"
+    "ora": "^3.0.0",
+    "moment": "^2.24.0"
   }
 }

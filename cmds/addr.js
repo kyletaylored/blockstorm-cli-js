@@ -1,7 +1,7 @@
 const download = require('../utils/download');
 const addr = require('../utils/addr');
-const spinner = require('../utils/spinner');
 const error = require('../utils/error');
+const spinner = require('../utils/spinner');
 const json2csv = require('json2csv').parse;
 
 module.exports = async args => {
@@ -12,7 +12,7 @@ module.exports = async args => {
       error('No ID provided. Use the --id flag to pass in a wallet ID.', 1);
     }
 
-    await addr(args).then(data => {
+    await addr.get(args).then(data => {
       // spinner().stop();
       // spinner().succeed();
 
@@ -21,26 +21,18 @@ module.exports = async args => {
         try {
           // Split block info and transactions.
           let name = data.address;
-          let tx = data.txs;
-          delete data.txs;
 
           // Write block info and transactions separately.
           let options = {
             name: name + '_info',
-            data: data,
-            opts: {
-              flatten: true
-            }
+            data: data
           };
           download.toCSV(options);
 
           // Write transaction file.
           options = {
             name: name + '_txs',
-            data: tx,
-            opts: {
-              flatten: true
-            }
+            data: flatten(tx)
           };
           download.toCSV(options);
         } catch (err) {
