@@ -20,7 +20,7 @@ module.exports = {
       // Process inputs
       if (tx.inputs) {
         tx.inputs.forEach(input => {
-          let in_base = new base();
+          let in_base = base;
           in_base['received address'] = input.addr;
           in_base['received value'] = input.value;
           in_base['balance'] += input.value / 1000000000;
@@ -31,7 +31,7 @@ module.exports = {
       // Process outputs
       if (tx.out) {
         tx.out.forEach(out => {
-          let out_base = new base();
+          let out_base = base;
           out_base['sent address'] = out.addr;
           out_base['sent value'] = out.value;
           out_base['balance'] -= out.value / 1000000000;

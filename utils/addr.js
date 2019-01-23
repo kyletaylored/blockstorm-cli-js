@@ -5,29 +5,27 @@ const extract = require('./extract');
 
 module.exports = {
   get: async args => {
-    const addr = this;
     let address = {};
     // Get initial transaction
-    await addr.fetch(args).then(data => {
+    await module.exports.fetch(args).then(data => {
       // Keep original address info
       address = data;
       let txs = extract.transactions(data.txs);
-      addr.page(args, data.n_tx).then(tx_arr => {
-        // Update transactions
-        address.txs = merge(txs, tx_arr);
-      });
+      // Page through all transactions
+      let tx_arr = module.exports.page(args, data.n_tx);
+      // Update transactions
+      address.txs = merge(txs, tx_arr);
 
       return address;
     });
   },
-  page: (args, n_tx) => {
-    const addr = this;
+  page: async (args, n_tx) => {
     let txs = [];
 
     // Page through transaction history.
     while (args.offset < n_tx) {
       args.offset += 50;
-      let data = addr.fetch(args);
+      let data = module.exports.fetch(args);
       txs.push(extract.transactions(data.txs));
     }
 
