@@ -5,34 +5,42 @@ const extract = require('./extract');
 
 module.exports = {
   get: async args => {
-    let address = {};
     // Get initial transaction
-    await module.exports.fetch(args).then(data => {
-      // Keep original address info
-      address = data;
-      let txs = extract.transactions(data.txs);
-      // Page through all transactions
-      let tx_arr = module.exports.page(args, data.n_tx);
-      // Update transactions
-      address.txs = merge(txs, tx_arr);
-
-      return address;
-    });
+    const address = module.exports
+      .fetch(args)
+      .then(data => {
+        // Keep original address info
+        let info = data;
+        let txs = extract.transactions(data.txs);
+        error.log(txs);
+        // Page through all transactions
+        let tx_arr = module.exports.page(args, data.n_tx);
+        // Update transactions
+        info.txs = merge(txs, tx_arr);
+        return info;
+      })
+      .catch(err => {
+        error.report(err, 1);
+      });
   },
-  page: async (args, n_tx) => {
-    let txs = [];
-
-    // Page through transaction history.
-    while (args.offset < n_tx) {
-      args.offset += 50;
-      let data = module.exports.fetch(args);
-      txs.push(extract.transactions(data.txs));
-    }
-
-    return txs;
+  page: (args, n_tx) => {
+    const transactions = function(args, n_tx) {
+      let txs = [];
+      error.log(args);
+      // Page through transaction history.
+      while (args.offset < n_tx) {
+        args.offset += 50;
+        let data = module.exports.fetch(args);
+        txs.push(extract.transactions(data.txs));
+        count++;
+      }
+      return txs;
+    };
+    return transactions;
   },
   fetch: async args => {
-    const results = await axios
+    error.log(args);
+    const results = axios
       .get('https://blockchain.info/rawaddr/' + args.id, {
         params: {
           offset: args.offset || 0
@@ -42,7 +50,7 @@ module.exports = {
         return results.data;
       })
       .catch(err => {
-        error(err, 1);
+        error.report(err, 1);
       });
 
     return results;
