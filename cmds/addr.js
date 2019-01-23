@@ -35,7 +35,7 @@ module.exports = async args => {
         // Write transaction file.
         options = {
           name: name + '_txs',
-          data: flatten(tx)
+          data: tx
         };
         download.toCSV(options);
       } catch (err) {
