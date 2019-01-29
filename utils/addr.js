@@ -1,20 +1,25 @@
-const axios = require('axios');
-const merge = require('deepmerge');
-const error = require('./error');
-const extract = require('./extract');
+const axios = require("axios");
+const merge = require("deepmerge");
+const error = require("./error");
+const extract = require("./extract");
 
-module.exports = {
-  get: async args => {
+class Address {
+  /**
+   * async get - return extracted transaction data from blockchain.info.
+   *
+   * @param  {type} args description
+   * @return {type}      description
+   */
+  async get(args) {
     // Get initial transaction
-    const address = module.exports
-      .fetch(args)
+    this.fetch(args)
       .then(data => {
         // Keep original address info
         let info = data;
         let txs = extract.transactions(data.txs);
-        error.log(txs);
+
         // Page through all transactions
-        let tx_arr = module.exports.page(args, data.n_tx);
+        let tx_arr = this.page(args, data.n_tx);
         // Update transactions
         info.txs = merge(txs, tx_arr);
         return info;
@@ -22,26 +27,47 @@ module.exports = {
       .catch(err => {
         error.report(err, 1);
       });
-  },
-  page: (args, n_tx) => {
-    const transactions = function(args, n_tx) {
-      let txs = [];
-      error.log(args);
-      // Page through transaction history.
-      while (args.offset < n_tx) {
-        args.offset += 50;
-        let data = module.exports.fetch(args);
-        txs.push(extract.transactions(data.txs));
-        count++;
-      }
-      return txs;
-    };
-    return transactions;
-  },
-  fetch: async args => {
-    error.log(args);
-    const results = axios
-      .get('https://blockchain.info/rawaddr/' + args.id, {
+  }
+
+  /**
+   * async page - helper function to page through multiple transactions.
+   *  applies an offset based on the number of transactions avaialable.
+   *
+   * @param  {object} args command line arguments
+   * @param  {int} n_tx number of transactions
+   * @return {array}      array of transaction objects
+   */
+  async page(args, n_tx) {
+    let txs = [];
+
+    // Page through transaction history.
+    while (args.offset < n_tx) {
+      args.offset += 50;
+
+      await this.fetch(args)
+        .then(data => {
+          txs.push(extract.transactions(data.txs));
+        })
+        .catch(err => {
+          error.report(err, 1);
+        });
+
+      await this.timeoutPromise(1000);
+      count++;
+    }
+
+    return txs;
+  }
+
+  /**
+   * async fetch - description
+   *
+   * @param  {type} args command line arguments that contain wallet address id.
+   * @return {type}      description
+   */
+  async fetch(args) {
+    return axios
+      .get("https://blockchain.info/rawaddr/" + args.id, {
         params: {
           offset: args.offset || 0
         }
@@ -52,7 +78,17 @@ module.exports = {
       .catch(err => {
         error.report(err, 1);
       });
-
-    return results;
   }
-};
+
+  /**
+   * timeoutPromise - helper function to delay promises resolving.
+   *
+   * @param  {type} timeout number of milliseconds to resolve timeout.
+   * @return {promise}
+   */
+  timeoutPromise(timeout) {
+    new Promise(resolve => setTimeout(resolve, timeout));
+  }
+}
+
+module.exports = new Address();
